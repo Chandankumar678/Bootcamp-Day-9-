@@ -1,0 +1,79 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Front and rear pointers
+struct Node* front = NULL;
+struct Node* rear = NULL;
+
+// Enqueue (insert at the end)
+void enqueue(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    if (newNode == NULL) {
+        printf("Queue overflow\n");
+        return;
+    }
+    newNode->data = data;
+    if (rear == NULL) {
+        front = rear = newNode;
+        rear->next = front;
+    } else {
+        rear->next = newNode;
+        rear = newNode;
+        rear->next = front;
+    }
+    printf("%d enqueued to circular queue\n", data);
+}
+
+// Dequeue (remove from the front)
+int dequeue() {
+    if (front == NULL) {
+        printf("Queue underflow\n");
+        return -1;
+    }
+    int data;
+    if (front == rear) {
+        data = front->data;
+        free(front);
+        front = rear = NULL;
+    } else {
+        struct Node* temp = front;
+        data = temp->data;
+        front = front->next;
+        rear->next = front;
+        free(temp);
+    }
+    return data;
+}
+
+// Display the circular queue
+void displayCircularQueue() {
+    if (front == NULL) {
+        printf("Circular Queue is empty\n");
+        return;
+    }
+    struct Node* temp = front;
+    printf("Circular Queue elements: ");
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while (temp != front);
+    printf("\n");
+}
+
+int main() {
+    enqueue(10);
+    enqueue(20);
+    enqueue(30);
+    displayCircularQueue();
+
+    printf("%d dequeued from circular queue\n", dequeue());
+    displayCircularQueue();
+
+    return 0;
+}
