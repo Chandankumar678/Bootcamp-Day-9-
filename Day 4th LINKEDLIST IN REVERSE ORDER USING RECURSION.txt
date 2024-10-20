@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to create a new node
+struct Node* createNode(int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Recursive function to print the linked list in reverse order
+void printReverse(struct Node* head) {
+    if (head == NULL)
+        return;
+
+    // First recursively call for the next node
+    printReverse(head->next);
+
+    // Then print the current node's data
+    printf("%d ", head->data);
+}
+
+// Function to insert a node at the end of the linked list
+struct Node* insertEnd(struct Node* head, int data) {
+    if (head == NULL) {
+        return createNode(data);
+    }
+    head->next = insertEnd(head->next, data);
+    return head;
+}
+
+int main() {
+    struct Node* head = NULL;
+
+    // Create a linked list: 10 -> 20 -> 30 -> 40
+    head = insertEnd(head, 10);
+    head = insertEnd(head, 20);
+    head = insertEnd(head, 30);
+    head = insertEnd(head, 40);
+
+    printf("Linked List in reverse order: ");
+    printReverse(head);
+    printf("\n");
+
+    return 0;
+}
