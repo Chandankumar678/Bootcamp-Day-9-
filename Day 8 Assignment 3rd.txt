@@ -1,0 +1,81 @@
+#include <stdio.h>
+#include <limits.h>
+
+#define MAX 100  // Maximum number of vertices
+#define INF INT_MAX  // Representation of infinity
+
+int graph[MAX][MAX];  // Adjacency matrix to store the graph
+int distance[MAX];    // Stores the shortest distance from the source
+int visited[MAX];     // Keeps track of visited vertices
+int numVertices;      // Number of vertices in the graph
+
+// Function to find the vertex with the minimum distance value
+int findMinDistance() {
+    int min = INF, minIndex;
+
+    for (int v = 0; v < numVertices; v++) {
+        if (!visited[v] && distance[v] <= min) {
+            min = distance[v];
+            minIndex = v;
+        }
+    }
+    return minIndex;
+}
+
+// Function to implement Dijkstra's algorithm
+void dijkstra(int startVertex) {
+    // Initialize distances and visited array
+    for (int i = 0; i < numVertices; i++) {
+        distance[i] = INF;
+        visited[i] = 0;
+    }
+    distance[startVertex] = 0;
+
+    // Process each vertex
+    for (int count = 0; count < numVertices - 1; count++) {
+        int u = findMinDistance();
+        visited[u] = 1;
+
+        // Update distance value of the adjacent vertices
+        for (int v = 0; v < numVertices; v++) {
+            if (!visited[v] && graph[u][v] && distance[u] != INF && distance[u] + graph[u][v] < distance[v]) {
+                distance[v] = distance[u] + graph[u][v];
+            }
+        }
+    }
+
+    // Print the shortest distances from the source
+    printf("\nVertex \t\t Distance from Source\n");
+    for (int i = 0; i < numVertices; i++) {
+        if (distance[i] == INF) {
+            printf("%d \t\t INF\n", i);
+        } else {
+            printf("%d \t\t %d\n", i, distance[i]);
+        }
+    }
+}
+
+// Main function to demonstrate Dijkstra's algorithm
+int main() {
+    int startVertex;
+
+    printf("Enter the number of vertices: ");
+    scanf("%d", &numVertices);
+
+    printf("Enter the adjacency matrix (use %d for infinity):\n", INF);
+    for (int i = 0; i < numVertices; i++) {
+        for (int j = 0; j < numVertices; j++) {
+            scanf("%d", &graph[i][j]);
+            if (graph[i][j] == INF) {
+                graph[i][j] = 0;  // Replace INF with 0 for non-existent edges
+            }
+        }
+    }
+
+    printf("Enter the starting vertex (0 to %d): ", numVertices - 1);
+    scanf("%d", &startVertex);
+
+    dijkstra(startVertex);
+
+    return 0;
+}
